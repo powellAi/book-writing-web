@@ -3,7 +3,7 @@ import type { BookWithChapters } from '../types/book';
 import * as store from '../data/bookStore';
 import ChapterList from './ChapterList';
 import ChapterEditor from './chapterEditor';
-import './AppShell.css';
+import ChapterDetailsPanel from './ChapterDetailsPanel';
 
 interface AppShellProps {
   bookId: string;
@@ -41,7 +41,11 @@ export default function AppShell({ bookId, onBackToShelf }: AppShellProps) {
 
   async function handleRenameChapter(chapterId: string, title: string) {
     await store.renameChapter(bookId, chapterId, title);
-    await load();
+    setBook((prev) =>
+      prev
+        ? { ...prev, chapters: prev.chapters.map((c) => (c.id === chapterId ? { ...c, title } : c)) }
+        : prev
+    );
   }
 
   async function handleDeleteChapter(chapterId: string) {
@@ -50,9 +54,6 @@ export default function AppShell({ bookId, onBackToShelf }: AppShellProps) {
     await load();
   }
 
-  // Moves which chapter is open (previous/next). This is pure navigation —
-  // it only changes local selection state and never touches chapter order
-  // or persisted data.
   function handleNavigateChapter(direction: 'up' | 'down') {
     if (!book || book.chapters.length === 0) return;
     const currentIndex = book.chapters.findIndex((c) => c.id === activeChapterId);
@@ -62,63 +63,88 @@ export default function AppShell({ bookId, onBackToShelf }: AppShellProps) {
     setActiveChapterId(book.chapters[nextIndex].id);
   }
 
-  // Actually reorders a chapter's position (used by the double-click
-  // arm-then-drag interaction, not by the up/down navigation controls).
   async function handleReorderChapter(chapterId: string, toIndex: number) {
     await store.reorderChapter(bookId, chapterId, toIndex);
     await load();
   }
 
-  // Persists the active chapter's editor content (debounced upstream,
-  // in ChapterEditor). Updates local state directly, rather than
-  // re-fetching from the store on every save, so the sidebar's word
-  // count stays live without an extra localStorage round-trip per edit.
   async function handleSaveChapterContent(chapterId: string, content: unknown, wordCount: number) {
     await store.updateChapterContent(bookId, chapterId, content, wordCount);
-    setBook((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        chapters: prev.chapters.map((c) => (c.id === chapterId ? { ...c, content, wordCount } : c)),
-      };
-    });
+    setBook((prev) =>
+      prev
+        ? { ...prev, chapters: prev.chapters.map((c) => (c.id === chapterId ? { ...c, content, wordCount } : c)) }
+        : prev
+    );
+  }
+
+  async function handleChapterDetailsChange(
+    chapterId: string,
+    updates: { description?: string; tags?: string[] }
+  ) {
+    await store.updateChapterDetails(bookId, chapterId, updates);
+    setBook((prev) =>
+      prev
+        ? { ...prev, chapters: prev.chapters.map((c) => (c.id === chapterId ? { ...c, ...updates } : c)) }
+        : prev
+    );
+  }
+
+  async function handleHeadingAlignChange(chapterId: string, align: 'left' | 'center') {
+    await store.updateChapterHeadingAlign(bookId, chapterId, align);
+    setBook((prev) =>
+      prev
+        ? {
+            ...prev,
+            chapters: prev.chapters.map((c) => (c.id === chapterId ? { ...c, headingAlign: align } : c)),
+          }
+        : prev
+    );
   }
 
   if (!book) {
-    return <div className="app-shell-loading">Loading book…</div>;
+    return <div className="flex items-center justify-center h-screen text-slate-500">Loading book…</div>;
   }
 
   const activeChapter = book.chapters.find((c) => c.id === activeChapterId) ?? null;
 
   return (
-    <div className="app-shell">
-      <aside className="app-sidebar">
-        <button className="btn-text back-to-shelf" onClick={onBackToShelf}>
+    <div className="flex h-screen bg-white">
+      <aside className="w-64 shrink-0 bg-slate-900 text-slate-100 flex flex-col p-4">
+        <button
+          className="text-left text-sm text-slate-300 hover:text-white mb-4"
+          onClick={onBackToShelf}
+        >
           ← All books
         </button>
-        <div className="app-sidebar-book-title">{book.title}</div>
-        <ChapterList
-          chapters={book.chapters}
-          activeChapterId={activeChapterId}
-          onSelect={setActiveChapterId}
-          onCreate={handleCreateChapter}
-          onRename={handleRenameChapter}
-          onDelete={handleDeleteChapter}
-          onNavigate={handleNavigateChapter}
-          onReorder={handleReorderChapter}
-        />
+        <div className="text-base font-semibold mb-4 truncate">{book.title}</div>
+        <div className="flex-1 overflow-y-auto -mx-1 px-1">
+          <ChapterList
+            chapters={book.chapters}
+            activeChapterId={activeChapterId}
+            onSelect={setActiveChapterId}
+            onCreate={handleCreateChapter}
+            onRename={handleRenameChapter}
+            onDelete={handleDeleteChapter}
+            onNavigate={handleNavigateChapter}
+            onReorder={handleReorderChapter}
+          />
+        </div>
       </aside>
 
-      <div className="app-main">
-        <header className="app-toolbar">
-          <div className="app-toolbar-title">
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="flex items-center justify-between px-4 py-2 border-b border-slate-200">
+          <div className="text-sm font-medium text-slate-800 truncate">
             {activeChapter ? activeChapter.title : 'No chapter selected'}
           </div>
-          <div className="mode-switch" role="tablist" aria-label="Editor mode">
+          <div className="flex rounded-md border border-slate-200 p-0.5" role="tablist" aria-label="Editor mode">
             <button
               role="tab"
               aria-selected={mode === 'writing'}
-              className={mode === 'writing' ? 'mode-btn active' : 'mode-btn'}
+              className={
+                mode === 'writing'
+                  ? 'px-3 py-1 text-xs rounded bg-emerald-600 text-white'
+                  : 'px-3 py-1 text-xs rounded text-slate-600 hover:bg-slate-100'
+              }
               onClick={() => setMode('writing')}
             >
               Writing
@@ -126,7 +152,11 @@ export default function AppShell({ bookId, onBackToShelf }: AppShellProps) {
             <button
               role="tab"
               aria-selected={mode === 'preview'}
-              className={mode === 'preview' ? 'mode-btn active' : 'mode-btn'}
+              className={
+                mode === 'preview'
+                  ? 'px-3 py-1 text-xs rounded bg-emerald-600 text-white'
+                  : 'px-3 py-1 text-xs rounded text-slate-600 hover:bg-slate-100'
+              }
               onClick={() => setMode('preview')}
             >
               Book preview
@@ -134,19 +164,28 @@ export default function AppShell({ bookId, onBackToShelf }: AppShellProps) {
           </div>
         </header>
 
-        <main className="app-workspace">
+        <main className="flex-1 min-h-0 flex">
           {!activeChapter ? (
-            <div className="workspace-empty">
+            <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
               <p>Select or create a chapter to start writing.</p>
             </div>
           ) : mode === 'writing' ? (
-            <ChapterEditor
-              key={activeChapter.id}
-              chapter={activeChapter}
-              onSave={handleSaveChapterContent}
-            />
+            <>
+              <ChapterEditor
+                key={activeChapter.id}
+                chapter={activeChapter}
+                onSave={handleSaveChapterContent}
+                onHeadingAlignChange={handleHeadingAlignChange}
+              />
+              <ChapterDetailsPanel
+                key={`${activeChapter.id}-details`}
+                chapter={activeChapter}
+                onRename={handleRenameChapter}
+                onDetailsChange={handleChapterDetailsChange}
+              />
+            </>
           ) : (
-            <div className="workspace-empty">
+            <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">
               <p>Book preview mode is not built yet.</p>
             </div>
           )}

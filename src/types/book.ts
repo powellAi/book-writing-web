@@ -21,6 +21,20 @@ export interface Chapter {
    *  without loading and walking every chapter's content. */
   wordCount: number;
   updatedAt: string; // ISO timestamp
+
+  /**
+   * Optional fields below: added for the chapter details panel and
+   * the heading-position setting. They're optional so chapters saved
+   * before these fields existed still load correctly — every reader
+   * should fall back with `?? ''`, `?? []`, or `?? 'left'`.
+   */
+
+  /** Short description shown in the chapter details panel. */
+  description?: string;
+  /** Freeform tags shown in the chapter details panel. */
+  tags?: string[];
+  /** Where the "Chapter Title" heading is displayed above the writing area. */
+  headingAlign?: 'left' | 'center';
 }
 
 /** A book on the shelf. */

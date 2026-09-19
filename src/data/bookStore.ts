@@ -90,6 +90,9 @@ export async function createChapter(bookId: string, title: string): Promise<Chap
     content: null,
     wordCount: 0,
     updatedAt: nowISO(),
+    description: '',
+    tags: [],
+    headingAlign: 'left',
   };
   writeJSON(chaptersKey(bookId), [...chapters, chapter]);
   await touchBook(bookId);
@@ -121,6 +124,35 @@ export async function updateChapterContent(
   const next = chapters.map((c) =>
     c.id === chapterId ? { ...c, content, wordCount, updatedAt: nowISO() } : c
   );
+  writeJSON(chaptersKey(bookId), next);
+  await touchBook(bookId);
+}
+
+/**
+ * Saves the chapter details panel's description and tags. Title is
+ * intentionally NOT handled here — it goes through renameChapter,
+ * since that's already wired up to the chapter list and is the single
+ * source of truth for a chapter's title.
+ */
+export async function updateChapterDetails(
+  bookId: string,
+  chapterId: string,
+  updates: { description?: string; tags?: string[] }
+): Promise<void> {
+  const chapters = readJSON<Chapter[]>(chaptersKey(bookId), []);
+  const next = chapters.map((c) => (c.id === chapterId ? { ...c, ...updates, updatedAt: nowISO() } : c));
+  writeJSON(chaptersKey(bookId), next);
+  await touchBook(bookId);
+}
+
+/** Sets where the chapter's title heading is displayed above the writing area. */
+export async function updateChapterHeadingAlign(
+  bookId: string,
+  chapterId: string,
+  headingAlign: 'left' | 'center'
+): Promise<void> {
+  const chapters = readJSON<Chapter[]>(chaptersKey(bookId), []);
+  const next = chapters.map((c) => (c.id === chapterId ? { ...c, headingAlign, updatedAt: nowISO() } : c));
   writeJSON(chaptersKey(bookId), next);
   await touchBook(bookId);
 }

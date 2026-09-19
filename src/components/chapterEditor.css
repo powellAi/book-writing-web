@@ -1,81 +1,61 @@
-.chapter-editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.chapter-editor-toolbar {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-2) var(--space-3);
-  border-bottom: var(--border-thin);
-}
-
-.editor-btn {
-  font: inherit;
-  font-size: var(--text-xs);
-  background: none;
-  border: var(--border-thin);
-  border-radius: var(--radius);
-  padding: var(--space-1) var(--space-2);
-  cursor: pointer;
-  color: var(--color-fg);
-}
-
-.editor-btn:hover {
-  background: var(--color-hover);
-}
-
-/* Same visual language as the active chapter row: subtle fill + a
-   dark border, not an inverted/filled button. */
-.editor-btn.active {
-  background: var(--color-hover);
-  border-color: var(--color-fg);
-}
-
-.editor-toolbar-divider {
-  width: 1px;
-  align-self: stretch;
-  background: var(--color-border);
-  margin: 0 var(--space-1);
-}
-
-.chapter-editor-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-4);
-}
-
 /* Tiptap ships no CSS of its own — this is the baseline styling for
    the actual contenteditable area (class "ProseMirror") and the
-   elements it produces. */
+   elements it produces. Everything else in the editor (toolbar,
+   layout, status bar) is styled with Tailwind utility classes
+   directly in ChapterEditor.tsx. */
+
 .chapter-editor-content .ProseMirror {
   outline: none;
-  min-height: 100%;
-  font-size: var(--text-sm);
-  line-height: 1.6;
+  min-height: 60vh;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #1e293b; /* slate-800, matches the Tailwind palette used elsewhere */
 }
 
 .chapter-editor-content .ProseMirror p {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 1rem;
 }
 
 .chapter-editor-content .ProseMirror h1,
-.chapter-editor-content .ProseMirror h2 {
-  margin: var(--space-4) 0 var(--space-2);
+.chapter-editor-content .ProseMirror h2,
+.chapter-editor-content .ProseMirror h3 {
+  margin: 1.5rem 0 0.75rem;
   font-weight: 600;
 }
 
 .chapter-editor-content .ProseMirror h1 {
-  font-size: 1.3em;
+  font-size: 1.4em;
 }
 
 .chapter-editor-content .ProseMirror h2 {
-  font-size: 1.15em;
+  font-size: 1.2em;
 }
 
-.chapter-editor-content .ProseMirror ul {
-  margin: 0 0 var(--space-3);
-  padding-left: var(--space-4);
+.chapter-editor-content .ProseMirror h3 {
+  font-size: 1.05em;
+}
+
+.chapter-editor-content .ProseMirror ul,
+.chapter-editor-content .ProseMirror ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.chapter-editor-content .ProseMirror a {
+  color: #059669; /* emerald-600 */
+  text-decoration: underline;
+}
+
+.chapter-editor-content .ProseMirror img {
+  max-width: 100%;
+  border-radius: 0.375rem;
+  margin: 0.5rem 0;
+}
+
+.chapter-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: 'Start writing your story…';
+  color: #94a3b8; /* slate-400 */
+  float: left;
+  height: 0;
+  pointer-events: none;
 }

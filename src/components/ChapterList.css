@@ -1,41 +1,61 @@
 .chapter-list {
-  padding: var(--space-4);
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 0.75rem;
   height: 100%;
-  overflow-y: auto;
 }
 
 .chapter-list-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: var(--text-xs);
-  color: var(--color-fg-muted);
+  font-size: 0.75rem;
+  color: #94a3b8; /* slate-400 */
   letter-spacing: 0.02em;
 }
 
+.chapter-list-header .btn-text {
+  color: #6ee7b7; /* emerald-300 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.chapter-list-header .btn-text:hover {
+  color: #a7f3d0; /* emerald-200 */
+}
+
 .chapter-list-empty {
-  font-size: var(--text-sm);
-  color: var(--color-fg-muted);
+  font-size: 0.85rem;
+  color: #94a3b8;
 }
 
 /* Previous/Next chapter navigation — moves the selection only,
    never reorders anything. */
 .chapter-nav {
   display: flex;
-  gap: var(--space-1);
-  border: var(--border-thin);
-  border-radius: var(--radius);
-  padding: var(--space-1);
+  gap: 0.25rem;
+  border: 1px solid #334155; /* slate-700 */
+  border-radius: 0.375rem;
+  padding: 0.25rem;
 }
 
 .chapter-nav-btn {
   flex: 1;
   text-align: center;
-  font-size: var(--text-xs);
-  padding: var(--space-1) var(--space-2);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: none;
+  border: none;
+  color: #cbd5e1; /* slate-300 */
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.chapter-nav-btn:hover:not(:disabled) {
+  background: #1e293b; /* slate-800 */
 }
 
 .chapter-nav-btn:disabled {
@@ -49,17 +69,17 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 0.25rem;
 }
 
 .chapter-item {
-  border-radius: var(--radius);
+  border-radius: 0.375rem;
   border: 1px solid transparent;
 }
 
 .chapter-item.active {
-  background: var(--color-hover);
-  border-color: var(--color-border);
+  background: #1e293b; /* slate-800 */
+  border-color: #475569; /* slate-600 */
 }
 
 .chapter-select {
@@ -67,62 +87,82 @@
   text-align: left;
   background: none;
   border: none;
-  padding: var(--space-2) var(--space-3);
+  padding: 0.5rem 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  /* Prevents the browser from starting a touch-scroll/zoom gesture
-     on this row while a double-tap drag is in progress. */
   touch-action: none;
   user-select: none;
+  color: #e2e8f0; /* slate-200 */
+  cursor: pointer;
 }
 
 /* Armed for dragging: double-clicked, waiting for a press-and-hold.
-   Black border like .active, but no background fill, so it reads as
-   "ready to drag" rather than "this is the open chapter." */
+   Emerald border, no fill, so it reads as "ready to drag" rather than
+   "this is the open chapter." */
 .chapter-item.armed {
-  border-color: var(--color-border);
+  border-color: #10b981; /* emerald-500 */
 }
 
-/* Drag state: the row currently being picked up. */
 .chapter-item.dragging {
   opacity: 0.45;
 }
 
-/* The row the dragged chapter would land on if dropped now. */
 .chapter-item.drag-target {
-  border-top: 2px solid var(--color-fg);
+  border-top: 2px solid #10b981; /* emerald-500 */
 }
 
 .chapter-select:hover {
-  background: var(--color-hover);
+  background: #1e293b;
 }
 
 .chapter-title {
-  font-size: var(--text-sm);
+  font-size: 0.85rem;
+  color: #f1f5f9; /* slate-100 */
 }
 
 .chapter-word-count {
-  font-size: var(--text-xs);
-  color: var(--color-fg-muted);
+  font-size: 0.7rem;
+  color: #94a3b8; /* slate-400 */
 }
 
 .chapter-rename-input {
   width: 100%;
   font: inherit;
-  padding: var(--space-2) var(--space-3);
-  border: var(--border-thin);
-  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #475569;
+  border-radius: 0.375rem;
+  background: #0f172a; /* slate-900 */
+  color: #f1f5f9;
 }
 
 .chapter-item-actions {
   display: flex;
   gap: 2px;
-  padding: 0 var(--space-2) var(--space-2);
+  padding: 0 0.5rem 0.5rem;
   flex-wrap: wrap;
 }
 
 .chapter-item-actions .btn-text {
-  font-size: var(--text-xs);
-  padding: 2px var(--space-1);
+  font-size: 0.7rem;
+  padding: 2px 0.375rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.chapter-item-actions .btn-text:hover {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.chapter-item-actions .btn-danger {
+  color: #f87171; /* red-400 */
+}
+
+.chapter-item-actions .btn-danger:hover {
+  background: #7f1d1d33;
+  color: #fca5a5;
 }
