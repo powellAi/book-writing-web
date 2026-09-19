@@ -1,0 +1,121 @@
+.chapter-list {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.chapter-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+  color: var(--color-fg-muted);
+  letter-spacing: 0.02em;
+}
+
+.chapter-list-empty {
+  font-size: var(--text-sm);
+  color: var(--color-fg-muted);
+}
+
+/* Previous/Next chapter navigation — moves the selection only,
+   never reorders anything. */
+.chapter-nav {
+  display: flex;
+  gap: var(--space-1);
+  border: var(--border-thin);
+  border-radius: var(--radius);
+  padding: var(--space-1);
+}
+
+.chapter-nav-btn {
+  flex: 1;
+  text-align: center;
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+}
+
+.chapter-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.chapter-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.chapter-item {
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+
+.chapter-item.active {
+  background: var(--color-hover);
+  border-color: var(--color-border);
+}
+
+.chapter-select {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* Prevents the browser from starting a touch-scroll/selection
+     gesture while we're measuring a press-and-hold on this row. */
+  touch-action: none;
+  user-select: none;
+}
+
+/* Long-press drag state: the row currently being picked up. */
+.chapter-item.dragging {
+  opacity: 0.45;
+}
+
+/* The row the dragged chapter would land on if dropped now. */
+.chapter-item.drag-target {
+  border-top: 2px solid var(--color-fg);
+}
+
+.chapter-select:hover {
+  background: var(--color-hover);
+}
+
+.chapter-title {
+  font-size: var(--text-sm);
+}
+
+.chapter-word-count {
+  font-size: var(--text-xs);
+  color: var(--color-fg-muted);
+}
+
+.chapter-rename-input {
+  width: 100%;
+  font: inherit;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-thin);
+  border-radius: var(--radius);
+}
+
+.chapter-item-actions {
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--space-2) var(--space-2);
+  flex-wrap: wrap;
+}
+
+.chapter-item-actions .btn-text {
+  font-size: var(--text-xs);
+  padding: 2px var(--space-1);
+}

@@ -1,0 +1,130 @@
+.bookshelf {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-5);
+}
+
+.bookshelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+}
+
+.bookshelf-header h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: var(--text-xl);
+  margin: 0;
+}
+
+.new-book-form {
+  border: var(--border-thin);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.new-book-form label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-fg-muted);
+}
+
+.new-book-form input {
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--color-fg);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-thin);
+  border-radius: var(--radius);
+}
+
+.new-book-form input:focus-visible {
+  outline: 2px solid var(--color-fg);
+  outline-offset: 1px;
+}
+
+.new-book-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.bookshelf-empty {
+  color: var(--color-fg-muted);
+  padding: var(--space-6) 0;
+}
+
+.book-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.book-card {
+  position: relative;
+  border: var(--border-thin);
+  border-radius: var(--radius);
+}
+
+.book-card-open {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 96px;
+}
+
+.book-card-open:hover {
+  background: var(--color-hover);
+}
+
+.book-card-title {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.book-card-author {
+  font-size: var(--text-sm);
+  color: var(--color-fg-muted);
+}
+
+.book-card-delete {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  font-size: var(--text-xs);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.book-card:hover .book-card-delete {
+  opacity: 1;
+}
+
+.book-card-confirm {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  padding: var(--space-2);
+}
